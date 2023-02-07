@@ -1,0 +1,10 @@
+
+box.encrypt=1
+box.separate=0
+box.ziplevel=1
+exe.crc=0
+exe.pack=1
+exe.packedfilesvisible=1
+exe.source=C:\Documents and Settings\Owner\My Documents\FGComics\Games\FGRPG\FGRPG v.1.0.2\RPG_RT.exe
+exe.target=fgrpg_v.1.1.0.exe
+
