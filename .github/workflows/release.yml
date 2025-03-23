@@ -7,43 +7,21 @@ on:
 
 jobs:
   release:
-    runs-on: alpine-latest
-    needs: build
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install Semantic Release
-        run: npm install -g semantic-release conventional-changelog-cli
-      
-      - name: Configure Git
-        run: |
+      - run: npm install -g semantic-release
+
+      - run: |
           git config --global user.name "index-github-runner"
           git config --global user.email "runner@index.index.one"
           git remote set-url origin "https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/${{ github.repository }}.git"
 
-      - name: Run Semantic Release
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-            npx semantic-release || echo "Semantic release failed"
-          else
-            npx semantic-release --branches next || echo "Prerelease on next failed"
-          fi
-
-      - name: Update Changelog
-        run: |
-          conventional-changelog -p angular -i CHANGELOG.md -s || echo "No changes found"
-          git add CHANGELOG.md
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: update changelog"
-            git push origin ${{ github.ref_name }} || echo "Nothing to push"
-          else
-            echo "No changes to commit"
-          fi
+      - run: npx semantic-release || echo "Semantic release failed"
