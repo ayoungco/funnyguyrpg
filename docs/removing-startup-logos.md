@@ -11,6 +11,8 @@ downloads page.
 No RM2K code is required for this, just the Raw Material Editor (the thingy you import 
 stuff into your game with)
 
+Repo note: in this project, the executable is at `game/RPG_RT.exe`.
+
 1. First open your games main executable (RPG_RT.exe) in resourse workshop (called RW 
 from now on) and you'll notice that it'll have files called "LOGOl" "LOG02" and 
 "LOG03" at the top of the file list! 
