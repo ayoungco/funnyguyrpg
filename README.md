@@ -4,13 +4,21 @@ You've heard us talkin' about it... here it is. Built on the RPG Maker 2003 engi
 
 [Download for Windows (23.6 MB .zip)](https://www.fgcomics.com/fgrpg/fgrpg-1.0.4-win.zip)
 
+## Repository Layout
+
+The RPG Maker 2003 project files now live under `game/` to keep the repository root tidy.
+
+- Game executable and data: `game/RPG_RT.exe`, `game/RPG_RT.ldb`, `game/RPG_RT.lmt`, `game/Map*.lmu`
+- Assets: `game/CharSet`, `game/ChipSet`, `game/Sound`, etc.
+- Save files: `game/Save*.lsd`
+
 ## Frequently Asked Questions
 
 For those of you who don't know what an FAQ is, here's a definition for you... FAQ: A list of frequently asked questions and their answers about a given subject. With that said, let's move on!
 
 ### How do you start the game?
 
-You start the FGRPG by clicking on either of the two shortcuts generated during the installation. One is in the Start Menu, under Programs → FGComics → The Funny Guy RPG. The second is on your computer's desktop. If you wish to start the RPG manually (for whatever reason), go to {HARD DRIVE} → Program Files → FGComics → FGRPG v.1.0.4 → RPG_RT.exe.
+You start the FGRPG by clicking on either of the two shortcuts generated during the installation. One is in the Start Menu, under Programs → FGComics → The Funny Guy RPG. The second is on your computer's desktop. If you wish to start the RPG manually (for whatever reason), go to {HARD DRIVE} → Program Files → FGComics → FGRPG v.1.0.4 → RPG_RT.exe. In this repository layout, the executable path is `game/RPG_RT.exe`.
 
 ### The FGRPG isn't displaying correctly on my monitor (edges are cut off, etc.)!
 
