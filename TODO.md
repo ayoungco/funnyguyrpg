@@ -1,0 +1,5 @@
+- [ ] Remove all placeholder content bloating the project
+- [ ] Update the README with actual information about the project instead of just advertising 
+- [ ] Add a license to the project
+- [ ] Trim down and repackage graphics assets to be more efficient and less bloated
+- [ ] bootstrap a minimal automated semver release process to make it easier to maintain the project and keep the changelog up to date

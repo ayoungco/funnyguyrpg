@@ -1,0 +1,12 @@
+# OS/editor junk
+.DS_Store
+**/.DS_Store
+Thumbs.db
+**/Thumbs.db
+
+# Legacy RM2k editor cache artifacts
+**/PPThumbs.ptn
+
+# Runtime-generated saves
+game/Save*.lsd
+
