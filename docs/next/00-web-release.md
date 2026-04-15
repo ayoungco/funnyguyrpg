@@ -31,18 +31,20 @@ Go to the EasyRPG Player releases page:
 https://github.com/EasyRPG/Player/releases
 ```
 
-Download the latest release archive named something like `easyrpg-player-X.Y.Z-web.zip`.
+Download the latest web build archive. At the time of writing, the official archive exposes a
+JS build named like `easyrpg-player-latest-js.tar.gz`.
 
 Extract it. You will get a directory containing at minimum:
 
 ```
 index.html
-easyrpg-player.js
-easyrpg-player.wasm
+index.js
+index.wasm
 favicon.png
 ```
 
-This directory becomes the root of what you deploy.
+Keep these files in `web/` as the source web shell. The final deployable bundle will be
+generated into `dist/web/`.
 
 ---
 
@@ -52,7 +54,7 @@ The EasyRPG web player expects game files to live in a subdirectory called `game
 player root, or directly in the root if you are only shipping one game. One-game layout is
 simpler and is what these instructions use.
 
-**Copy the game assets** from `game/` into the player root directory. Do **not** copy the
+**Copy the game assets** from `game/` into the build output directory (`dist/web/`). Do **not** copy the
 following — they are Windows-only and/or irrelevant on the web:
 
 | File/pattern | Reason to exclude |
@@ -70,8 +72,8 @@ Everything else goes in. The result should look like:
 
 ```
 index.html                  ← EasyRPG Player
-easyrpg-player.js           ← EasyRPG Player
-easyrpg-player.wasm         ← EasyRPG Player
+index.js                    ← EasyRPG Player
+index.wasm                  ← EasyRPG Player
 RPG_RT.ini                  ← game
 RPG_RT.ldb                  ← game
 RPG_RT.lmt                  ← game
@@ -152,8 +154,8 @@ EasyRPG's WASM build requires files to be served over HTTP (not `file://`) becau
 block `SharedArrayBuffer` on local file URLs. Use Python's built-in server:
 
 ```sh
-cd <player-root>
-python3 -m http.server 8080
+cd <repo-root>
+python3 -m http.server 8080 --directory dist/web/
 ```
 
 Open `http://localhost:8080` in your browser. The game should load and start.
@@ -231,8 +233,7 @@ instead, both of which support header configuration and have generous free tiers
 1. Push the player root directory to a GitHub repository (can be this repo with the player
    files added, or a separate deployment repo).
 2. Go to Cloudflare Pages > Create application > Connect to Git.
-3. Set the build output directory to the player root (e.g. `/web` if you add it there, or
-   `/` if the whole repo is the player root).
+3. Set the build output directory to `dist/web/`.
 4. Add the two required headers in Pages > your project > Settings > Headers, or via a
    `_headers` file in the root:
 

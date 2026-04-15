@@ -20,7 +20,7 @@ The `game/` directory contains everything you need. Run `game/RPG_RT.exe` direct
 
 ### In the Browser (coming soon)
 
-We're working on a web release using the EasyRPG Player web build, which runs the game entirely in WebAssembly. No plugins, no downloads. See `docs/next/00-web-release.md` for the full setup instructions.
+We're working on a web release using the EasyRPG Player web build, which runs the game entirely in WebAssembly. No plugins, no downloads. The source web shell lives in `web/`, and the deployable bundle is generated into `dist/web/`. See `docs/next/00-web-release.md` for the full setup instructions.
 
 ## Frequently Asked Questions
 

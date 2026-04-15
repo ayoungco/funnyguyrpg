@@ -10,3 +10,5 @@ Thumbs.db
 # Runtime-generated saves
 game/Save*.lsd
 
+# Generated web build output
+dist/
