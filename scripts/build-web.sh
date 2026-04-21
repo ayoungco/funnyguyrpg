@@ -6,7 +6,7 @@
 #
 # What it does:
 #   1. Copies the web player shell from web/ into dist/web/.
-#   2. Copies game assets from game/ into dist/web/, excluding Windows-only and
+#   2. Copies game assets from game/ into dist/web/games/default/, excluding Windows-only and
 #      developer-only files.
 #   3. Preserves the player files and host config while cleaning out stale game
 #      assets in the build output.
@@ -21,6 +21,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GAME_DIR="$REPO_ROOT/game"
 WEB_DIR="$REPO_ROOT/web"
 DIST_DIR="$REPO_ROOT/dist/web"
+GAME_DIST_DIR="$DIST_DIR/games/default"
 PLAYER_REQUIRED=(
   "index.html"
   "index.js"
@@ -62,21 +63,15 @@ rsync -av --delete \
   "$WEB_DIR/" "$DIST_DIR/"
 
 echo ""
-echo "==> Syncing game assets: game/ -> dist/web/"
+echo "==> Syncing game assets: game/ -> dist/web/games/default/"
+mkdir -p "$GAME_DIST_DIR"
 rsync -av --delete \
-  "--filter=P /index.html" \
-  "--filter=P /index.js" \
-  "--filter=P /index.wasm" \
-  "--filter=P /favicon.png" \
-  "--filter=P /_headers" \
-  "--filter=P /netlify.toml" \
-  "--filter=P /index.json" \
   "${RSYNC_EXCLUDES[@]}" \
-  "$GAME_DIR/" "$DIST_DIR/"
+  "$GAME_DIR/" "$GAME_DIST_DIR/"
 
 echo ""
 echo "==> Generating file index"
-python3 "$REPO_ROOT/scripts/generate_index.py" "$DIST_DIR"
+python3 "$REPO_ROOT/scripts/generate_index.py" "$GAME_DIST_DIR"
 
 echo ""
 echo "Done. Serve with: python3 -m http.server 8080 --directory dist/web/"

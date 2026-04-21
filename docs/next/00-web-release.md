@@ -9,7 +9,7 @@ required.
 ## How it works
 
 - The EasyRPG Player is compiled to WebAssembly (`.wasm`) and loaded by a JavaScript loader.
-- Your game's asset files (`game/`) are served alongside the player.
+- Your game's asset files (`game/`) are served from `games/default/` under the player shell.
 - EasyRPG fetches each asset on demand using HTTP range requests.
 - Everything runs client-side. No save-game server needed (saves go to browser localStorage).
 
@@ -50,11 +50,10 @@ generated into `dist/web/`.
 
 ## Step 2 — Prepare the game files
 
-The EasyRPG web player expects game files to live in a subdirectory called `games/` under the
-player root, or directly in the root if you are only shipping one game. One-game layout is
-simpler and is what these instructions use.
+This EasyRPG web player expects games under `games/`, with the default game in
+`games/default/`. The game files and their `index.json` must live there.
 
-**Copy the game assets** from `game/` into the build output directory (`dist/web/`). Do **not** copy the
+**Copy the game assets** from `game/` into `dist/web/games/default/`. Do **not** copy the
 following — they are Windows-only and/or irrelevant on the web:
 
 | File/pattern | Reason to exclude |
@@ -74,29 +73,32 @@ Everything else goes in. The result should look like:
 index.html                  ← EasyRPG Player
 index.js                    ← EasyRPG Player
 index.wasm                  ← EasyRPG Player
-RPG_RT.ini                  ← game
-RPG_RT.ldb                  ← game
-RPG_RT.lmt                  ← game
-RPG_RT.ind                  ← game
-Map0001.lmu                 ← game (repeat for all maps)
-...
-Backdrop/                   ← game asset directories
-Battle/
-BattleCharSet/
-BattleWeapon/
-CharSet/
-ChipSet/
-Data_1.bin
-FaceSet/
-GameOver/
-Monster/
-Music/
-Panorama/
-Picture/
-Sound/
-System/
-System2/
-Title/
+games/
+  default/
+    index.json              ← generated manifest
+    RPG_RT.ini              ← game
+    RPG_RT.ldb              ← game
+    RPG_RT.lmt              ← game
+    RPG_RT.ind              ← game
+    Map0001.lmu             ← game (repeat for all maps)
+    ...
+    Backdrop/               ← game asset directories
+    Battle/
+    BattleCharSet/
+    BattleWeapon/
+    CharSet/
+    ChipSet/
+    Data_1.bin
+    FaceSet/
+    GameOver/
+    Monster/
+    Music/
+    Panorama/
+    Picture/
+    Sound/
+    System/
+    System2/
+    Title/
 ```
 
 ---
@@ -104,31 +106,24 @@ Title/
 ## Step 3 — Generate the file index
 
 EasyRPG's web player needs a manifest of every game file so it can preload or lazy-fetch
-them. The player release includes a helper script (`generate_index.py`) to create this. If
-the release you downloaded does not include it, create it manually:
+them. The official tool for this is `gencache`, which writes an `index.json` that the
+current player expects.
 
-**Using the bundled script (preferred):**
+**Using `gencache` (preferred):**
 
 ```sh
-cd <player-root>
-python3 generate_index.py
+cd <player-root>/games/default
+gencache
 ```
 
-This writes `index.json` (sometimes `filelist.js` depending on the player version) to the
-same directory. Run it again any time you add or remove game files.
+This writes `index.json` into the game directory. Run it again any time you add or remove
+game files.
 
-**If no script is included**, create `index.json` manually. It is a flat JSON array of
-relative paths to every file the player needs to load:
+If you do not have `gencache`, use this repo's compatibility generator instead:
 
 ```sh
-cd <player-root>
-python3 -c "
-import json, pathlib
-files = [str(p.relative_to('.')) for p in pathlib.Path('.').rglob('*') if p.is_file()
-         and not p.name.startswith('.')
-         and p.suffix not in ('.js', '.wasm', '.html', '.py', '.json')]
-print(json.dumps(sorted(files), indent=2))
-" > index.json
+cd <repo-root>
+python3 scripts/generate_index.py dist/web/games/default
 ```
 
 ---
