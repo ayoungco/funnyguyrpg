@@ -252,6 +252,64 @@ instead, both of which support header configuration and have generous free tiers
 2. Apply the nginx config from step 6.
 3. Confirm `application/wasm` MIME type is registered.
 
+### Laravel Forge
+
+Forge can deploy this repo directly from GitHub. Create the site from your repository, then in
+Forge's site advanced settings set the web directory to `/dist/web` so nginx serves the built
+bundle instead of the repo root. Forge documents custom web directories and deploy scripts in:
+
+- https://forge.laravel.com/docs/sites/the-basics
+- https://forge.laravel.com/docs/sites/deployments
+
+Use [scripts/forge-build-web.sh](/Users/ayounglad/src/funnyguyrpg/scripts/forge-build-web.sh:1)
+inside your Forge deploy script after the new code has been checked out.
+
+Standard deployment script:
+
+```bash
+cd $FORGE_SITE_PATH
+git pull origin "$FORGE_SITE_BRANCH"
+
+bash scripts/forge-build-web.sh
+```
+
+Zero-downtime deployment script:
+
+```bash
+$CREATE_RELEASE()
+cd $FORGE_RELEASE_DIRECTORY
+
+bash scripts/forge-build-web.sh
+
+$ACTIVATE_RELEASE()
+```
+
+Notes:
+
+- `scripts/build-web.sh` requires `python3` and `rsync`, which are available on typical Forge
+  Ubuntu servers.
+- If you enable Forge's GitHub push-to-deploy integration, Forge will run the deploy script on
+  every push to the configured branch automatically.
+- Keep the COOP/COEP headers and `.wasm` MIME type configuration from step 6 in the Forge site's
+  nginx configuration.
+
+### GitHub Actions deploy to a self-hosted server
+
+This repo includes [.github/workflows/deploy-web.yml](/Users/ayounglad/src/funnyguyrpg/.github/workflows/deploy-web.yml:1),
+which builds `dist/web/` on every push to `main` and deploys it over SSH with `rsync`.
+
+Configure these GitHub repository secrets before enabling it:
+
+- `DEPLOY_HOST`: Hostname or IP of your server.
+- `DEPLOY_USER`: SSH user for deployment.
+- `DEPLOY_PATH`: Absolute target directory on the server, for example `/var/www/funnyguyrpg`.
+- `DEPLOY_SSH_KEY`: Private SSH key GitHub Actions should use.
+- `DEPLOY_KNOWN_HOSTS`: Output of `ssh-keyscan -p <port> <host>`.
+- `DEPLOY_PORT`: Optional SSH port. Defaults to `22`.
+
+The workflow assumes your server is already configured to serve the deployed directory with the
+required COOP/COEP headers and `.wasm` MIME type from step 6.
+
 ---
 
 ## File size considerations

@@ -1,0 +1,85 @@
+name: Build And Deploy Web
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate deploy configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          missing=0
+          for var in DEPLOY_HOST DEPLOY_USER DEPLOY_PATH DEPLOY_KNOWN_HOSTS; do
+            if [[ -z "${!var:-}" ]]; then
+              echo "::error title=Missing secret::$var is not configured"
+              missing=1
+            fi
+          done
+
+          if [[ -z "${{ secrets.DEPLOY_SSH_KEY }}" ]]; then
+            echo "::error title=Missing secret::DEPLOY_SSH_KEY is not configured"
+            missing=1
+          fi
+
+          if [[ "$missing" -ne 0 ]]; then
+            exit 1
+          fi
+
+      - name: Build web bundle
+        run: scripts/build-web.sh
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Configure known_hosts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Ensure remote deploy directory exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          port="${DEPLOY_PORT:-22}"
+          ssh -p "$port" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"
+
+      - name: Deploy dist/web via rsync
+        shell: bash
+        run: |
+          set -euo pipefail
+          port="${DEPLOY_PORT:-22}"
+          rsync -avz --delete \
+            -e "ssh -p $port" \
+            dist/web/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"

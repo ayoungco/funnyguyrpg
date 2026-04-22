@@ -10,7 +10,7 @@
 #      developer-only files.
 #   3. Preserves the player files and host config while cleaning out stale game
 #      assets in the build output.
-#   4. Runs generate_index.py to regenerate dist/web/index.json.
+#   4. Runs generate_index.py to regenerate dist/web/games/default/index.json.
 #
 # The EasyRPG Player files must already be present in web/ before running this
 # script. Download them from the EasyRPG web build archive.
