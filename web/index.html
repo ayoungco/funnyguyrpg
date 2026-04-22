@@ -72,6 +72,51 @@
       text-align: center;
     }
 
+    #startup-branding {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: black;
+      transition: opacity 320ms ease;
+    }
+
+    #startup-branding.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .startup-branding__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 2rem;
+    }
+
+    .startup-branding__mark {
+      width: min(24vmin, 180px);
+      height: auto;
+      filter: invert(1);
+    }
+
+    .startup-branding__wordmark {
+      font-size: clamp(1.4rem, 2vw, 1.8rem);
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: lowercase;
+      color: white;
+    }
+
+    #startup-branding #status {
+      min-height: 1.5em;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
     #controls {
       position: relative;
       text-align: right;
@@ -154,13 +199,19 @@
   </style>
 </head>
 <body>
+  <div id="startup-branding" class="unselectable">
+    <div class="startup-branding__inner">
+      <img class="startup-branding__mark" src="favicon.png" alt="ayoung.co monogram">
+      <div class="startup-branding__wordmark">ayoung.co</div>
+      <div id="status">Loading...</div>
+    </div>
+  </div>
+
   <div id="controls">
     <button id="controls-fullscreen" class="unselectable">
       <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="25" height="25"><path d="M13.5 13.5H10m3.5 0V10m0 3.5l-4-4m.5-8h3.5m0 0V5m0-3.5l-4 4M5 1.5H1.5m0 0V5m0-3.5l4 4m-4 4.5v3.5m0 0H5m-3.5 0l4-4" stroke="currentColor"></path></svg>
     </button>
   </div>
-
-  <div id="status"></div>
 
   <div id="viewport">
     <canvas id="canvas" tabindex="-1" class="unselectable"></canvas>
@@ -184,6 +235,9 @@
 <script async type="text/javascript" src="index.js"></script>
 
 <script>
+const MIN_STARTUP_BRANDING_MS = 3200;
+const startupBranding = document.getElementById('startup-branding');
+const startupBrandingStartedAt = performance.now();
 const hasTouchscreen = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 const preventNativeKeys = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft', ' ', 'F12'];
 const keys = new Map();
@@ -191,6 +245,10 @@ const keysDown = new Map();
 const canvas = document.getElementById('canvas');
 let easyrpgPlayer;
 let lastTouchedId;
+
+function hideStartupBranding() {
+  startupBranding.classList.add('is-hidden');
+}
 
 // Launch the Player and configure it
 window.addEventListener('load', (event) => {
@@ -202,6 +260,10 @@ window.addEventListener('load', (event) => {
       easyrpgPlayer = Module;
       easyrpgPlayer.initApi();
       canvas.focus();
+
+      const elapsed = performance.now() - startupBrandingStartedAt;
+      const remaining = Math.max(0, MIN_STARTUP_BRANDING_MS - elapsed);
+      window.setTimeout(hideStartupBranding, remaining);
 
       // Custom code here
     });
