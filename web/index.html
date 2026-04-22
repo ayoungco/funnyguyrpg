@@ -92,22 +92,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 1.25rem;
       padding: 2rem;
     }
 
     .startup-branding__mark {
-      width: min(24vmin, 180px);
+      width: min(72vmin, 520px);
+      max-width: calc(100vw - 3rem);
       height: auto;
-      filter: invert(1);
-    }
-
-    .startup-branding__wordmark {
-      font-size: clamp(1.4rem, 2vw, 1.8rem);
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: lowercase;
-      color: white;
     }
 
     #startup-branding #status {
@@ -201,8 +193,7 @@
 <body>
   <div id="startup-branding" class="unselectable">
     <div class="startup-branding__inner">
-      <img class="startup-branding__mark" src="favicon.png" alt="ayoung.co monogram">
-      <div class="startup-branding__wordmark">ayoung.co</div>
+      <img class="startup-branding__mark" src="boot-logo.png" alt="ayoung.co logo">
       <div id="status">Loading...</div>
     </div>
   </div>
