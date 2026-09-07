@@ -19,7 +19,7 @@ required.
 - The EasyRPG Player is compiled to WebAssembly (`.wasm`) and loaded by a JavaScript loader.
 - Your game's asset files (`game/`) are served from `games/default/` under the player shell.
 - EasyRPG fetches each asset on demand using HTTP range requests.
-- Everything runs client-side. No save-game server needed (saves go to browser localStorage).
+- Everything runs client-side. No save-game server needed (saves go to the browser's IndexedDB, via Emscripten's IDBFS — see [cloud-saves-and-auth0.md](cloud-saves-and-auth0.md) for the tradeoffs that come with that being per-device/per-browser).
 
 ---
 
@@ -170,7 +170,7 @@ Open `http://localhost:8080` in your browser. The game should load and start.
       synthesizer; no browser MIDI support required)
 - [ ] Sound effects play
 - [ ] You can navigate menus and start a new game
-- [ ] Saves work (they persist to browser localStorage between page reloads)
+- [ ] Saves work (they persist to the browser's IndexedDB between page reloads, scoped to this device/browser)
 - [ ] No 404 errors in the browser console (missing assets show up here)
 
 ---
