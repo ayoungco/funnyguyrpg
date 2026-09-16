@@ -1,5 +1,5 @@
 - [x] Download EasyRPG Player web build and place files in web/ (see docs/next/00-web-release.md step 1)
-- [ ] Convert Sound/*.wav to OGG to reduce download size (ffmpeg batch convert, see docs/next/00-web-release.md)
+- [ ] Convert Sound/*.wav to OGG to reduce download size (ffmpeg batch convert, see docs/next/00-web-release.md) (will RPG_RT accept OGG files as drop-in replacements for WAVs?)
 - [x] Run scripts/build-web.sh and verify locally with python3 -m http.server 8080 --directory dist/web/
 - [ ] Set up Cloudflare Pages (or Netlify) deployment from this repo pointing at dist/web/
 - [x] Add COOP/COEP headers config for web host (web/_headers, web/netlify.toml)

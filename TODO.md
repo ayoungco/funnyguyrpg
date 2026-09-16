@@ -10,3 +10,4 @@
 - [ ] Add a license to the project
 - [ ] decide which tilesets are our favorite and consolidate the number of tilesets to reduce download size and make it easier to maintain
 - [ ] Bootstrap a minimal automated semver release process to make it easier to maintain the project and keep the changelog up to date
+- [ ] Redo menus and UI with patterns and "pencil on paper" style graphics to give the game a more unique and cohesive visual identity. Extract from high quality scans.
